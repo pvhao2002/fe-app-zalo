@@ -1,0 +1,34 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.DemoZola" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">#46A0F0</item>
+        <item name="colorPrimaryVariant">#46A0F0</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/teal_200</item>
+        <item name="colorSecondaryVariant">@color/teal_700</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <!-- Customize your theme here. -->
+    </style>
+
+    <style name="EditTextTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">
+        <item name="colorControlNormal">#ECECEE</item>
+        <item name="colorControlActivated">#46A0F0</item>
+        <item name="colorControlHighlight">#46A0F0</item>
+    </style>
+
+    <style name="ThemeOverlay.SearchView" parent="">
+        <!-- Text color -->
+        <item name="android:editTextColor">#ffffff</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:inputType">text</item>
+        <item name="android:editTextBackground">@null</item>
+        <!-- Hint text color -->
+        <item name="android:textColorHint">#ffffff</item>
+        <item name="android:background">#46A0F0</item>
+        <item name="colorControlNormal">#ECECEE</item>
+    </style>
+</resources>
