@@ -11,91 +11,87 @@ import com.author.toan.models.Message;
 import com.author.toan.remote.SharedPrefManager;
 import com.author.toan.routes.APIChatService;
 import com.author.toan.routes.APIMessageService;
-import com.author.toan.routes.APIUserService;
 import com.author.toan.routes.ChatClient;
 import com.author.toan.routes.MessageClient;
-import com.author.toan.routes.UserClient;
-import com.google.gson.JsonArray;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 
-import okhttp3.ResponseBody;
+import io.socket.client.IO;
+import io.socket.client.Socket;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ChatViewModel extends ViewModel {
-    private MutableLiveData<Boolean> loading;
-    private MutableLiveData<STATE> gotoScreen;
-    private MutableLiveData<List<Chat>> chat;
-    private APIChatService apiChatService;
-    private static ChatViewModel instance;
+public class MessageViewModel extends ViewModel {
+    private Socket mSocket;
 
-    private ChatViewModel() {
+    {
+        try {
+            mSocket = IO.socket("http://10.0.2.2:8000");
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
+    private MutableLiveData<Boolean> loading;
+    private MutableLiveData<List<Message>> messages;
+    private APIMessageService apiMessageService;
+    public MutableLiveData<String> message;
+    private static MessageViewModel instance;
+    private MutableLiveData<STATE> gotoScreen;
+    private MessageViewModel() {
         loading = new MutableLiveData<>(false);
+        message = new MutableLiveData<>();
+        messages = new MutableLiveData<>();
         gotoScreen = new MutableLiveData<>();
-        chat = new MutableLiveData<>();
-        apiChatService = ChatClient.getInstance();
+        apiMessageService = MessageClient.getInstance();
     }
 
-    public static ChatViewModel getInstance() {
+    public static MessageViewModel getInstance() {
         if (instance == null) {
-            instance = new ChatViewModel();
+            instance = new MessageViewModel();
         }
         return instance;
     }
 
-    public MutableLiveData<STATE> getGotoScreen() {
-        return gotoScreen;
+    public MutableLiveData<List<Message>> getMessages() {
+        return messages;
     }
 
     public MutableLiveData<Boolean> getLoading() {
         return loading;
     }
 
+    public MutableLiveData<STATE> getGotoScreen() {
+        return gotoScreen;
+    }
+
     public void setGotoScreen(STATE state) {
         gotoScreen.setValue(state);
     }
 
-    public void viewAccount() {
-        gotoScreen.setValue(STATE.VIEW_ACCOUNT);
+    public void back() {
+        gotoScreen.setValue(STATE.CHAT);
     }
-
-    public void viewTimeLines() {
-        gotoScreen.setValue(STATE.VIEW_TIME_LINE);
-    }
-
-    public void viewGroups() {
-        gotoScreen.setValue(STATE.VIEW_GROUP);
-    }
-
-    public void viewMessages() {
-        gotoScreen.setValue(STATE.VIEW_MESSAGE);
-    }
-
-    public MutableLiveData<List<Chat>> getChat() {
-        return chat;
-    }
-
-    public void getChats() {
+    public void getAllMessage(String chatId) {
         String token = SharedPrefManager.getUser().getToken();
+        HashMap<String, String> id = new HashMap<>();
+        id.put("chatId", chatId);
         loading.setValue(true);
-        apiChatService.getChats("Bearer " + token).enqueue(new Callback<List<Chat>>() {
+        apiMessageService.getMessages(id,"Bearer " + token).enqueue(new Callback<List<Message>>() {
             @Override
-            public void onResponse(Call<List<Chat>> call, Response<List<Chat>> response) {
+            public void onResponse(Call<List<Message>> call, Response<List<Message>> response) {
                 loading.setValue(false);
                 try {
                     loading.setValue(false);
                     if (response.code() == 200) {
-                        List<Chat> chatList = response.body();
-                        chat.setValue(chatList);
+                        List<Message> messageList = response.body();
+                        messages.setValue(messageList);
                     } else {
                         JSONObject obj = new JSONObject(response.errorBody().string());
                         Log.e("Error-backend", obj.getString("error"));
@@ -108,9 +104,14 @@ public class ChatViewModel extends ViewModel {
             }
 
             @Override
-            public void onFailure(Call<List<Chat>> call, Throwable t) {
+            public void onFailure(Call<List<Message>> call, Throwable t) {
                 Log.e("Error-call", t.getMessage());
             }
         });
     }
+
+    public void sendMessage() {
+
+    }
+
 }

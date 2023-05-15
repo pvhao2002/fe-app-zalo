@@ -4,12 +4,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
         <variable
-            name="chatViewModel"
-            type="com.author.toan.viewmodels.ChatViewModel" />
+            name="messageViewModel"
+            type="com.author.toan.viewmodels.MessageViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clInformation"
+        android:background="#ffffff"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".views.chat.MessageActivity">
@@ -28,6 +29,7 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginStart="16dp"
+                android:onClick="@{()->messageViewModel.back()}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -47,32 +49,55 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
+            android:id="@+id/rvMessage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="#ffffff"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout2">
 
         </androidx.recyclerview.widget.RecyclerView>
 
-        <EditText
-            android:id="@+id/editTextTextPersonName"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:background="@drawable/top_line_background"
-            android:ems="10"
-            android:hint="Messages"
-            android:inputType="textPersonName"
-            android:paddingStart="16dp"
-            android:text="@={chatViewModel.message}"
-            android:textColor="#000000"
-            android:textColorHint="#7A7A7A"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:theme="@style/EditTextTheme"
+            android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            android:orientation="horizontal"
+            android:weightSum="5"
+            >
+
+            <EditText
+                android:id="@+id/editTextTextPersonName"
+                android:layout_width="0dp"
+                android:layout_weight="4.5"
+                android:layout_height="60dp"
+                android:background="@drawable/top_line_background"
+                android:ems="10"
+                android:maxLines="1"
+                android:hint="Messages"
+                android:inputType="textPersonName"
+                android:paddingStart="16dp"
+                android:text="@={messageViewModel.message}"
+                android:textColor="#000000"
+                android:textColorHint="#7A7A7A"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:theme="@style/EditTextTheme"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <ImageView
+                android:id="@+id/btnSend"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:scaleType="fitXY"
+                android:layout_weight="0.5"
+                android:onClick="@{()->messageViewModel.sendMessage()}"
+                android:src="@drawable/ic_arrow_back3" />
+        </LinearLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

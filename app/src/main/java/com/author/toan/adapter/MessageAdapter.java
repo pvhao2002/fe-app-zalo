@@ -1,5 +1,6 @@
 package com.author.toan.adapter;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -12,6 +13,8 @@ import com.author.toan.R;
 import com.author.toan.databinding.RowMessageReceiverBinding;
 import com.author.toan.databinding.RowMessageSenderBinding;
 import com.author.toan.models.Message;
+import com.author.toan.remote.SharedPrefManager;
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -29,6 +32,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        Log.e("viewType", viewType + "");
         if (viewType == VIEW_TYPE_SENDER) {
             com.author.toan.databinding.RowMessageSenderBinding rowMessageSenderBinding =
                     DataBindingUtil.inflate(
@@ -65,6 +69,15 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         return messageList.size();
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        if (messageList.get(position).getSender().getId().equals(SharedPrefManager.getUser().getId())) {
+            return VIEW_TYPE_SENDER;
+        } else {
+            return VIEW_TYPE_RECEIVER;
+        }
+    }
+
     public static class SenderViewHolder extends RecyclerView.ViewHolder {
         public ObservableField<String> Smessage = new ObservableField<>();
         private final RowMessageSenderBinding rowMessageSenderBinding;
@@ -83,7 +96,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     public static class ReceiverViewHolder extends RecyclerView.ViewHolder {
-        public ObservableField<String> Smessage = new ObservableField<>();
+        public ObservableField<String> Rmessage = new ObservableField<>();
         private final RowMessageReceiverBinding rowMessageReceiverBinding;
 
         public ReceiverViewHolder(@Nonnull RowMessageReceiverBinding itemView) {
@@ -95,7 +108,11 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             if (rowMessageReceiverBinding.getMessageViewHolder() == null) {
                 rowMessageReceiverBinding.setMessageViewHolder(this);
             }
-            Smessage.set(message.getContent());
+            Glide.with(rowMessageReceiverBinding.getRoot().getContext())
+                    .load(message.getSender().getAvatar().getUrl())
+                    .circleCrop()
+                    .into(rowMessageReceiverBinding.ivAvatar);
+            Rmessage.set(message.getContent());
         }
     }
 

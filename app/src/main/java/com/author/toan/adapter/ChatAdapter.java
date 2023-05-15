@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.author.toan.R;
 import com.author.toan.databinding.RowChatBinding;
 import com.author.toan.models.Chat;
+import com.author.toan.remote.SharedPrefManager;
 import com.bumptech.glide.Glide;
 
 import java.util.List;
@@ -75,11 +76,20 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
             if (rowChatBinding.getChatViewHodel() == null) {
                 rowChatBinding.setChatViewHodel(this);
             }
-            Glide.with(rowChatBinding.getRoot().getContext())
-                    .load(chat.getUsers().get(chat.getUsers().size() - 1).getAvatar().getUrl())
-                    .circleCrop()
-                    .into(rowChatBinding.ivAvatar);
-            name.set(chat.getName());
+            if (chat.getUsers().get(0).getId().equals(SharedPrefManager.getUser().getId())) {
+                Glide.with(rowChatBinding.getRoot().getContext())
+                        .load(chat.getUsers().get(1).getAvatar().getUrl())
+                        .circleCrop()
+                        .into(rowChatBinding.ivAvatar);
+                name.set(chat.getUsers().get(1).getName());
+            }
+            else {
+                Glide.with(rowChatBinding.getRoot().getContext())
+                        .load(chat.getUsers().get(0).getAvatar().getUrl())
+                        .circleCrop()
+                        .into(rowChatBinding.ivAvatar);
+                name.set(chat.getUsers().get(0).getName());
+            }
             lastMessage.set(chat.getMessages().get(chat.getMessages().size() - 1).getContent());
         }
 

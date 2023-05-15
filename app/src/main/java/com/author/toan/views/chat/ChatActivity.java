@@ -58,6 +58,11 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.OnIte
 
     @Override
     public void itemClick(Chat chat) {
-        startActivity(new Intent(this, MessageActivity.class));
+        Intent intent = new Intent(this, MessageActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("id", chat.getId());
+        bundle.putString("name", chat.getName());
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 }

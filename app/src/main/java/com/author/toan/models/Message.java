@@ -10,15 +10,16 @@ public class Message implements Serializable {
     @Expose
     private String id;
 
-    @SerializedName("sender")
-    @Expose
-    private User sender;
-
     @SerializedName("content")
     @Expose
     private String content;
 
-    public Message(String id, User sender, String content) {
+    @SerializedName("sender")
+    @Expose
+    private User sender;
+
+
+    public Message(String id, String content, User sender) {
         this.id = id;
         this.sender = sender;
         this.content = content;
@@ -47,4 +48,5 @@ public class Message implements Serializable {
     public void setContent(String content) {
         this.content = content;
     }
+
 }
