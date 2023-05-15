@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.author.toan.R;
 import com.author.toan.databinding.ActivityMainBinding;
@@ -21,19 +22,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
         ActivityMainBinding activityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        MainViewModel mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
+        MainViewModel mainViewModel = MainViewModel.getInstance();
         activityMainBinding.setLifecycleOwner(this);
         activityMainBinding.setMainViewModel(mainViewModel);
 
         mainViewModel.getGotoLoginScreen().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean gotoLoginScreen) {
+                Log.e("gotoLoginScreen", gotoLoginScreen.toString());
                 if (gotoLoginScreen) {
-                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                    startActivity(intent);
+                    startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                 } else {
-                    Intent intent = new Intent(MainActivity.this, RegisterActivity.class);
-                    startActivity(intent);
+                    startActivity(new Intent(getApplicationContext(), RegisterActivity.class));
                 }
             }
         });

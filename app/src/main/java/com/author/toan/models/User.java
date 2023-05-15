@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 public class User implements Serializable {
-    @SerializedName("id")
+    @SerializedName("_id")
     @Expose
     private String id;
 
@@ -25,10 +25,6 @@ public class User implements Serializable {
     @SerializedName("password")
     private String password;
 
-    @SerializedName("role")
-    @Expose
-    private String role;
-
     @SerializedName("token")
     @Expose
     private String token;
@@ -45,13 +41,27 @@ public class User implements Serializable {
         this.phone = phone;
     }
 
-    public User(String id, String name, String phone, String role, String token, Boolean isVerified) {
+    public User(String id, String name, String phone, String token) {
+        this.id = id;
+        this.phone = phone;
+        this.name = name;
+        this.token = token;
+    }
+
+    public User(String id, String name, String phone, Boolean isVerified, Avatar avatar) {
+        this.id = id;
+        this.phone = phone;
+        this.name = name;
+        this.token = token;
+    }
+
+    public User(String id, String name, String phone, String token, Boolean isVerified, Avatar avatar) {
         this.id = id;
         this.name = name;
         this.phone = phone;
-        this.role = role;
         this.token = token;
         this.isVerified = isVerified;
+        this.avatar = avatar;
     }
 
     public String getId() {
@@ -86,14 +96,6 @@ public class User implements Serializable {
         this.phone = phone;
     }
 
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
     public String getToken() {
         return token;
     }
@@ -117,6 +119,4 @@ public class User implements Serializable {
     public void setAvatar(Avatar avatar) {
         this.avatar = avatar;
     }
-
-
 }

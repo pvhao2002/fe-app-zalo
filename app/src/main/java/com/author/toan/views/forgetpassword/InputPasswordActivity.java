@@ -2,6 +2,7 @@ package com.author.toan.views.forgetpassword;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +16,8 @@ import com.author.toan.databinding.ActivityInputPasswordBinding;
 import com.author.toan.viewmodels.ForgetPasswordViewModel;
 import com.author.toan.viewmodels.RegisterViewModel;
 import com.author.toan.views.login.LoginActivity;
+import com.author.toan.views.main.MainActivity;
+import com.author.toan.views.register.RegisterActivity;
 
 public class InputPasswordActivity extends AppCompatActivity {
 
@@ -26,12 +29,13 @@ public class InputPasswordActivity extends AppCompatActivity {
         activityInputPassword2Binding.setLifecycleOwner(this);
         activityInputPassword2Binding.setForgetPasswordViewModel(forgetPasswordViewModel);
 
-        forgetPasswordViewModel.getGotoNextStep().observe(this, new Observer<STATE>() {
+        forgetPasswordViewModel.getGotoScreen().observe(this, new Observer<STATE>() {
             @Override
-            public void onChanged(STATE STATE) {
-                if (STATE == STATE.LOGIN) {
-                    Intent intent = new Intent(InputPasswordActivity.this, LoginActivity.class);
-                    startActivity(intent);
+            public void onChanged(STATE state) {
+                if (state == STATE.LOGIN) {
+                    startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                    forgetPasswordViewModel.setGotoScreen(STATE.MAIN);
+                    forgetPasswordViewModel.setError("");
                 }
             }
         });
@@ -39,7 +43,23 @@ public class InputPasswordActivity extends AppCompatActivity {
         forgetPasswordViewModel.getError().observe(this, new Observer<String>() {
             @Override
             public void onChanged(String s) {
-                activityInputPassword2Binding.tvError.setVisibility(View.VISIBLE);
+                if (!s.isEmpty()) {
+                    activityInputPassword2Binding.tvError.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        forgetPasswordViewModel.getLoading().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean isLoading) {
+                if (isLoading) {
+                    activityInputPassword2Binding.tvError.setVisibility(View.GONE);
+                    activityInputPassword2Binding.progressBar.setVisibility(View.VISIBLE);
+                    activityInputPassword2Binding.btnContinue.setVisibility(View.GONE);
+                } else {
+                    activityInputPassword2Binding.btnContinue.setVisibility(View.VISIBLE);
+                    activityInputPassword2Binding.progressBar.setVisibility(View.GONE);
+                }
             }
         });
     }

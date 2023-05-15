@@ -23,12 +23,12 @@ public class InputPasswordActivity extends AppCompatActivity {
         activityInputPasswordBinding.setLifecycleOwner(this);
         activityInputPasswordBinding.setRegisterViewModel(registerViewModel);
 
-        registerViewModel.getGotoNextStep().observe(this, new Observer<STATE>() {
+        registerViewModel.getGotoScreen().observe(this, new Observer<STATE>() {
             @Override
-            public void onChanged(STATE STATE) {
-                if (STATE == STATE.INPUT_OTP ) {
-                    Intent intent = new Intent(InputPasswordActivity.this, InputOTPActivity.class);
-                    startActivity(intent);
+            public void onChanged(STATE state) {
+                if (state == STATE.INPUT_OTP ) {
+                    startActivity(new Intent(getApplicationContext(), InputOTPActivity.class));
+                    registerViewModel.setGotoScreen(STATE.MAIN);
                 }
             }
         });
@@ -36,7 +36,22 @@ public class InputPasswordActivity extends AppCompatActivity {
         registerViewModel.getError().observe(this, new Observer<String>() {
             @Override
             public void onChanged(String s) {
-                activityInputPasswordBinding.tvError.setVisibility(View.VISIBLE);
+                if (!s.isEmpty()) {
+                    activityInputPasswordBinding.tvError.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        registerViewModel.getLoading().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean isLoading) {
+                if (isLoading) {
+                    activityInputPasswordBinding.progressBar.setVisibility(View.VISIBLE);
+                    activityInputPasswordBinding.btnContinue.setVisibility(View.GONE);
+                } else {
+                    activityInputPasswordBinding.btnContinue.setVisibility(View.VISIBLE);
+                    activityInputPasswordBinding.progressBar.setVisibility(View.GONE);
+                }
             }
         });
     }

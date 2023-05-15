@@ -6,9 +6,13 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.author.toan.STATE;
+import com.author.toan.models.Avatar;
 import com.author.toan.models.User;
+import com.author.toan.remote.SharedPrefManager;
 import com.author.toan.routes.APIUserService;
 import com.author.toan.routes.UserClient;
+import com.author.toan.views.login.LoginActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,31 +27,47 @@ import retrofit2.Response;
 
 public class LoginViewModel extends ViewModel {
     private APIUserService apiUserService;
-    public MutableLiveData<User> mUser = new MutableLiveData<>();
-    private MutableLiveData<Boolean> loading = new MutableLiveData<>(false);
-    public MutableLiveData<String> error = new MutableLiveData<>("");
-    public MutableLiveData<String> phoneNumber = new MutableLiveData<>("");
-    public MutableLiveData<String> password = new MutableLiveData<>("");
-    private MutableLiveData<Boolean> gotoRecoverPassword;
-    public MutableLiveData<String> getError() {
-        if (error == null) {
-            error = new MutableLiveData<>();
+    public MutableLiveData<User> mUser;
+    private MutableLiveData<Boolean> loading;
+    public MutableLiveData<String> error;
+    public MutableLiveData<String> phoneNumber;
+    public MutableLiveData<String> password;
+    private MutableLiveData<STATE> gotoScreen;
+    private static LoginViewModel instance;
+
+    public static LoginViewModel getInstance() {
+        if (instance == null) {
+            instance = new LoginViewModel();
         }
+        return instance;
+    }
+
+    private LoginViewModel() {
+        mUser = new MutableLiveData<>();
+        loading = new MutableLiveData<>(false);
+        error = new MutableLiveData<>("");
+        phoneNumber = new MutableLiveData<>("");
+        password = new MutableLiveData<>("");
+        gotoScreen = new MutableLiveData<>();
+        apiUserService = UserClient.getInstance();
+    }
+
+    public MutableLiveData<String> getError() {
         return error;
     }
 
-    public MutableLiveData<Boolean> getGotoRecoverPassword() {
-        if (gotoRecoverPassword == null) {
-            gotoRecoverPassword = new MutableLiveData<>(false);
-        }
-        return gotoRecoverPassword;
+    public MutableLiveData<STATE> getGotoScreen() {
+        return gotoScreen;
+    }
+    public void setGotoScreen(STATE state) {
+        gotoScreen.setValue(state);
     }
 
     public MutableLiveData<Boolean> getLoading() {
-        if (loading == null) {
-            loading = new MutableLiveData<>(false);
-        }
         return loading;
+    }
+    public MutableLiveData<User> getUser() {
+        return mUser;
     }
 
     public void login() {
@@ -58,23 +78,30 @@ public class LoginViewModel extends ViewModel {
         email_password.put("phone", phone);
         email_password.put("password", password);
 
-        apiUserService = UserClient.getInstance();
         apiUserService.login(email_password).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 try {
+                    loading.setValue(false);
                     if (response.code() == 200) {
                         JSONObject obj = new JSONObject(response.body().string());
+                        JSONObject avatarJson = obj.getJSONObject("avatar");
+
+                        Avatar avatar = new Avatar(
+                                avatarJson.getString("url"),
+                                avatarJson.getString("public_id")
+                        );
+
                         User user = new User(
-                                obj.getString("id"),
+                                obj.getString("_id"),
                                 obj.getString("name"),
                                 obj.getString("phone"),
-                                obj.getString("role"),
                                 obj.getString("token"),
-                                obj.getBoolean("isVerified")
+                                obj.getBoolean("isVerified"),
+                                avatar
                         );
                         mUser.setValue(user);
-                        gotoRecoverPassword.setValue(true);
+                        gotoScreen.setValue(STATE.CHAT);
                         Log.e("token: ", user.getToken());
                     } else {
                         JSONObject obj = new JSONObject(response.errorBody().string());
@@ -92,19 +119,12 @@ public class LoginViewModel extends ViewModel {
                 Log.e("Error", t.getMessage());
             }
         });
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                loading.setValue(false);
-            }
-        }, 3000);
     }
 
     public void logout() {
     }
 
     public void recoverPassword() {
-        gotoRecoverPassword.setValue(true);
+        gotoScreen.setValue(STATE.FORGOT_PASSWORD);
     }
 }

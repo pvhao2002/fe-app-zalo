@@ -23,12 +23,12 @@ public class InputPhoneNumberActivity extends AppCompatActivity {
         activityInputPhoneNumberBinding.setLifecycleOwner(this);
         activityInputPhoneNumberBinding.setRegisterViewModel(registerViewModel);
 
-        registerViewModel.getGotoNextStep().observe(this, new Observer<STATE>() {
+        registerViewModel.getGotoScreen().observe(this, new Observer<STATE>() {
             @Override
-            public void onChanged(STATE STATE) {
-                if (STATE == STATE.INPUT_PASSWORD && activityInputPhoneNumberBinding.checkBox.isChecked()) {
-                    Intent intent = new Intent(InputPhoneNumberActivity.this, InputPasswordActivity.class);
-                    startActivity(intent);
+            public void onChanged(STATE state) {
+                if (state == STATE.INPUT_PASSWORD && activityInputPhoneNumberBinding.checkBox.isChecked()) {
+                    startActivity(new Intent(getApplicationContext(), InputPasswordActivity.class));
+                    registerViewModel.setGotoScreen(STATE.MAIN);
                 }
             }
         });
@@ -36,7 +36,9 @@ public class InputPhoneNumberActivity extends AppCompatActivity {
         registerViewModel.getError().observe(this, new Observer<String>() {
             @Override
             public void onChanged(String s) {
-                activityInputPhoneNumberBinding.tvError.setVisibility(View.VISIBLE);
+                if (!s.isEmpty()) {
+                    activityInputPhoneNumberBinding.tvError.setVisibility(View.VISIBLE);
+                }
             }
         });
     }

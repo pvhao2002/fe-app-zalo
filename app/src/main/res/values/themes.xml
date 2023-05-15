@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.DemoZola" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="Theme.DemoZola" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">#46A0F0</item>
         <item name="colorPrimaryVariant">#46A0F0</item>
@@ -14,13 +14,13 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="EditTextTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">
+    <style name="EditTextTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <item name="colorControlNormal">#ECECEE</item>
         <item name="colorControlActivated">#46A0F0</item>
         <item name="colorControlHighlight">#46A0F0</item>
     </style>
 
-    <style name="ThemeOverlay.SearchView" parent="">
+    <style name="ThemeOverlay.SearchView" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <!-- Text color -->
         <item name="android:editTextColor">#ffffff</item>
         <item name="android:maxLines">1</item>

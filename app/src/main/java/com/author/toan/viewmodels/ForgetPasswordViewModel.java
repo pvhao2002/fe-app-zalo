@@ -24,17 +24,25 @@ import retrofit2.Response;
 
 public class ForgetPasswordViewModel extends ViewModel {
     private String userId;
-    private MutableLiveData<Boolean> loading = new MutableLiveData<>(false);
-    public MutableLiveData<String> phoneNumber = new MutableLiveData<>("");
-    public MutableLiveData<String> otp = new MutableLiveData<>("");
-    public MutableLiveData<String> password = new MutableLiveData<>("");
-    public MutableLiveData<String> confirmPassword = new MutableLiveData<>("");
-    public MutableLiveData<String> error = new MutableLiveData<>("");
-    public MutableLiveData<STATE> gotoNextStep;
-    private APIUserService apiUserService = UserClient.getInstance();
+    private MutableLiveData<Boolean> loading;
+    public MutableLiveData<String> phoneNumber;
+    public MutableLiveData<String> otp;
+    public MutableLiveData<String> password;
+    public MutableLiveData<String> confirmPassword;
+    public MutableLiveData<String> error;
+    public MutableLiveData<STATE> gotoScreen;
+    private APIUserService apiUserService;
     private static ForgetPasswordViewModel instance;
 
     private ForgetPasswordViewModel() {
+        loading = new MutableLiveData<>(false);
+        phoneNumber = new MutableLiveData<>("");
+        otp = new MutableLiveData<>("");
+        password = new MutableLiveData<>("");
+        confirmPassword = new MutableLiveData<>("");
+        error = new MutableLiveData<>("");
+        gotoScreen = new MutableLiveData<>();
+        apiUserService = UserClient.getInstance();
     }
 
     public static ForgetPasswordViewModel getInstance() {
@@ -44,24 +52,20 @@ public class ForgetPasswordViewModel extends ViewModel {
         return instance;
     }
 
-    public MutableLiveData<STATE> getGotoNextStep() {
-        if (gotoNextStep == null) {
-            gotoNextStep = new MutableLiveData<>(STATE.INIT);
-        }
-        return gotoNextStep;
+    public MutableLiveData<STATE> getGotoScreen() {
+        return gotoScreen;
     }
-
+    public void setGotoScreen(STATE state) {
+        gotoScreen.setValue(state);
+    }
     public MutableLiveData<String> getError() {
-        if (error == null) {
-            error = new MutableLiveData<>();
-        }
         return error;
+    }
+    public void setError(String mError) {
+        error.setValue(mError);
     }
 
     public MutableLiveData<Boolean> getLoading() {
-        if (loading == null) {
-            loading = new MutableLiveData<>(false);
-        }
         return loading;
     }
 
@@ -76,46 +80,38 @@ public class ForgetPasswordViewModel extends ViewModel {
     public void isValidPhone() {
         loading.setValue(true);
         if (Patterns.PHONE.matcher(phoneNumber.getValue()).matches()) {
-            gotoNextStep.setValue(STATE.INPUT_OTP);
             HashMap<String, String> phone_otp = new HashMap<>();
             phone_otp.put("phone", phoneNumber.getValue());
             apiUserService.forgotPassword(phone_otp).enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        try {
-                           if (response.code() == 200) {
-                               JSONObject obj = new JSONObject(response.body().string());
-                               userId = obj.getString("id");
-                               Log.e("Id: ", userId);
-
-                           }
-                           else {
-                                 JSONObject obj = new JSONObject(response.errorBody().string());
-                                 error.setValue(obj.getString("error"));
-                           }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                    try {
+                        loading.setValue(false);
+                        if (response.code() == 200) {
+                            JSONObject obj = new JSONObject(response.body().string());
+                            userId = obj.getString("_id");
+                            Log.e("Id: ", userId);
+                            gotoScreen.setValue(STATE.INPUT_OTP);
+                        } else {
+                            JSONObject obj = new JSONObject(response.errorBody().string());
+                            error.setValue(obj.getString("error"));
                         }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
+                }
 
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
                     Log.e("Error", t.getMessage());
                 }
-            } );
+            });
 
         } else {
             error.setValue("Invalid phone number");
         }
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                loading.setValue(false);
-            }
-        }, 3000);
     }
 
     public void isValidOTP() {
@@ -128,11 +124,12 @@ public class ForgetPasswordViewModel extends ViewModel {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 try {
+                    loading.setValue(false);
                     if (response.code() == 200) {
                         JSONObject jsonObject = new JSONObject(response.body().string());
                         boolean correctOTP = jsonObject.getBoolean("valid");
                         if (correctOTP) {
-                            gotoNextStep.setValue(STATE.INPUT_PASSWORD);
+                            gotoScreen.setValue(STATE.INPUT_PASSWORD);
                         } else {
                             error.setValue("Invalid OTP");
                         }
@@ -152,13 +149,6 @@ public class ForgetPasswordViewModel extends ViewModel {
                 Log.e("Error", t.getMessage());
             }
         });
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                loading.setValue(false);
-            }
-        }, 3000);
     }
 
     public void recoverPassword() {
@@ -172,22 +162,22 @@ public class ForgetPasswordViewModel extends ViewModel {
             apiUserService.resetPassword(user_password).enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        try {
-                            if (response.code() == 200) {
-                                JSONObject obj = new JSONObject(response.body().string());
-                                String message = obj.getString("message");
-                                Log.e("Message: ", message);
-                                gotoNextStep.setValue(STATE.LOGIN);
-                            }
-                            else {
-                                JSONObject obj = new JSONObject(response.errorBody().string());
-                                error.setValue(obj.getString("error"));
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                    try {
+                        loading.setValue(false);
+                        if (response.code() == 200) {
+                            JSONObject obj = new JSONObject(response.body().string());
+                            String message = obj.getString("message");
+                            Log.e("Message: ", message);
+                            gotoScreen.setValue(STATE.LOGIN);
+                        } else {
+                            JSONObject obj = new JSONObject(response.errorBody().string());
+                            error.setValue(obj.getString("error"));
                         }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 @Override
@@ -196,12 +186,5 @@ public class ForgetPasswordViewModel extends ViewModel {
                 }
             });
         }
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                loading.setValue(false);
-            }
-        }, 3000);
     }
 }

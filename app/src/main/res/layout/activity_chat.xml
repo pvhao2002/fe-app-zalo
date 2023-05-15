@@ -4,12 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
         <variable
-            name="loginViewModel"
-            type="com.author.toan.viewmodels.LoginViewModel"
-            />
-        <variable
-            name="registerViewModel"
-            type="com.author.toan.viewmodels.RegisterViewModel"
+            name="chatViewModel"
+            type="com.author.toan.viewmodels.ChatViewModel"
             />
     </data>
 
@@ -20,15 +16,154 @@
         tools:context=".views.chat.ChatActivity">
 
         <androidx.appcompat.widget.SearchView
+            android:id="@+id/searchView"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:theme="@style/ThemeOverlay.SearchView"
             android:iconifiedByDefault="false"
-            app:queryHint="Search"
+            android:theme="@style/ThemeOverlay.SearchView"
             app:iconifiedByDefault="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:queryHint="Search">
+
+        </androidx.appcompat.widget.SearchView>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvChat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/searchView" />
+
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:id="@+id/coordinatorLayout"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <com.google.android.material.bottomappbar.BottomAppBar
+                android:id="@+id/app_bar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="bottom"
+                android:backgroundTint="#f6f6f6"
+                app:fabCradleMargin="8dp"
+                app:fabCradleRoundedCornerRadius="50dp"
+                app:fabCradleVerticalOffset="6dp"
+                app:layout_constraintBottom_toBottomOf="@+id/coordinatorLayout">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    >
+
+                    <LinearLayout
+                        android:id="@+id/btnMessages"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.2"
+                        android:orientation="vertical"
+                        android:onClick="@{()->chatViewModel.viewMessages()}"
+                        >
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="7dp"
+                            android:src="@drawable/message" />
+                        <TextView
+                            android:id="@+id/tvMessages"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Messages"
+                            android:textAlignment="center"
+                            android:textColor="#676767"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/btnGroups"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.2"
+                        android:orientation="vertical"
+                        android:onClick="@{()->chatViewModel.viewGroups()}"
+                        >
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_marginTop="7dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/groups" />
+                        <TextView
+                            android:id="@+id/tvGroups"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Groups"
+                            android:textAlignment="center"
+                            android:textColor="#676767"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/btnTimelines"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.2"
+                        android:orientation="vertical"
+                        android:onClick="@{()->chatViewModel.viewTimeLines()}"
+                        >
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_marginTop="7dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/timelines" />
+
+                        <TextView
+                            android:id="@+id/tvTimelines"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Timelines"
+                            android:textAlignment="center"
+                            android:textColor="#676767"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/btnMe"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.2"
+                        android:orientation="vertical"
+                        android:onClick="@{()->chatViewModel.viewAccount()}"
+                        >
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_marginTop="7dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/user" />
+
+                        <TextView
+                            android:id="@+id/tvMe"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Me"
+                            android:textAlignment="center"
+                            android:textColor="#676767"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.bottomappbar.BottomAppBar>
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

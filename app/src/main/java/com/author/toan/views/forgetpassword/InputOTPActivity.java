@@ -31,12 +31,26 @@ public class InputOTPActivity extends AppCompatActivity {
         activityInputOtp2Binding.setForgetPasswordViewModel(forgetPasswordViewModel);
 
         activityInputOtp2Binding.tvPhone.setText(forgetPasswordViewModel.phoneNumber.getValue());
-        forgetPasswordViewModel.getGotoNextStep().observe(this, new Observer<STATE>() {
+        forgetPasswordViewModel.getGotoScreen().observe(this, new Observer<STATE>() {
             @Override
-            public void onChanged(STATE STATE) {
-                if (STATE == STATE.INPUT_PASSWORD) {
+            public void onChanged(STATE state) {
+                if (state == STATE.INPUT_PASSWORD) {
+                    startActivity(new Intent(getApplicationContext(), InputPasswordActivity.class));
+                    forgetPasswordViewModel.setGotoScreen(STATE.MAIN);
+                    forgetPasswordViewModel.setError("");
+                }
+            }
+        });
 
-
+        forgetPasswordViewModel.getLoading().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean isLoading) {
+                if (isLoading) {
+                    activityInputOtp2Binding.progressBar.setVisibility(View.VISIBLE);
+                    activityInputOtp2Binding.btnContinue.setVisibility(View.GONE);
+                } else {
+                    activityInputOtp2Binding.btnContinue.setVisibility(View.VISIBLE);
+                    activityInputOtp2Binding.progressBar.setVisibility(View.GONE);
                 }
             }
         });

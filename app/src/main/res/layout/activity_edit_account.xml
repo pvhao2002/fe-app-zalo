@@ -3,11 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+        <variable
+            name="editAccountViewModel"
+            type="com.author.toan.viewmodels.EditAccountViewModel" />
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#ffffff"
         tools:context=".views.editprofile.EditAccountActivity">
+
 
         <TextView
             android:id="@+id/textView2"
@@ -34,6 +41,7 @@
             android:textSize="20sp"
             android:textStyle="bold"
             android:textColor="#7A7A7A"
+            android:onClick="@{() -> editAccountViewModel.changePassword()}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView2" />
@@ -51,6 +59,7 @@
             android:textSize="20sp"
             android:textStyle="bold"
             android:textColor="#7A7A7A"
+            android:onClick="@{() -> editAccountViewModel.deleteAccount()}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvChangePassword" />

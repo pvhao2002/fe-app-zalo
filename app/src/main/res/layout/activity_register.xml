@@ -123,7 +123,9 @@
                 android:layout_gravity="bottom|end"
                 android:onClick="@{()->registerViewModel.isValidName()}"
                 android:src="@drawable/ic_arrow_back2"
-                app:backgroundTint="#46A0F0" />
+                app:backgroundTint="#46A0F0"
+                app:tint="#ffffff"
+                />
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

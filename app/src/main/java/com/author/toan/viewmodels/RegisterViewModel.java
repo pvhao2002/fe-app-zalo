@@ -25,18 +25,27 @@ import retrofit2.Response;
 
 public class RegisterViewModel extends ViewModel {
     private String userId;
-    private MutableLiveData<Boolean> loading = new MutableLiveData<>(false);
-    public MutableLiveData<String> name = new MutableLiveData<>("");
-    public MutableLiveData<String> phoneNumber = new MutableLiveData<>("");
-    public MutableLiveData<String> otp = new MutableLiveData<>("");
-    public MutableLiveData<STATE> gotoNextStep;
-    public MutableLiveData<String> password = new MutableLiveData<>("");
-    public MutableLiveData<String> confirmPassword = new MutableLiveData<>("");
-    public MutableLiveData<String> error = new MutableLiveData<>("");
-    private APIUserService apiUserService = UserClient.getInstance();
+    private MutableLiveData<Boolean> loading;
+    public MutableLiveData<String> name;
+    public MutableLiveData<String> phoneNumber;
+    public MutableLiveData<String> otp;
+    public MutableLiveData<STATE> gotoScreen;
+    public MutableLiveData<String> password;
+    public MutableLiveData<String> confirmPassword;
+    public MutableLiveData<String> error;
+    private APIUserService apiUserService;
     private static RegisterViewModel instance;
 
     private RegisterViewModel() {
+        loading = new MutableLiveData<>(false);
+        name = new MutableLiveData<>("");
+        phoneNumber = new MutableLiveData<>("");
+        otp = new MutableLiveData<>("");
+        password = new MutableLiveData<>("");
+        confirmPassword = new MutableLiveData<>("");
+        error = new MutableLiveData<>("");
+        apiUserService = UserClient.getInstance();
+        gotoScreen = new MutableLiveData<>();
     }
 
     public static RegisterViewModel getInstance() {
@@ -46,24 +55,19 @@ public class RegisterViewModel extends ViewModel {
         return instance;
     }
 
-    public MutableLiveData<STATE> getGotoNextStep() {
-        if (gotoNextStep == null) {
-            gotoNextStep = new MutableLiveData<>(STATE.INIT);
-        }
-        return gotoNextStep;
+    public MutableLiveData<STATE> getGotoScreen() {
+        return gotoScreen;
     }
-
+    public void setGotoScreen(STATE state) {
+        gotoScreen.setValue(state);
+    }
     public MutableLiveData<String> getError() {
-        if (error == null) {
-            error = new MutableLiveData<>();
-        }
         return error;
     }
-
+    public void setError(String mError) {
+        error.setValue(mError);
+    }
     public MutableLiveData<Boolean> getLoading() {
-        if (loading == null) {
-            loading = new MutableLiveData<>(false);
-        }
         return loading;
     }
 
@@ -79,18 +83,17 @@ public class RegisterViewModel extends ViewModel {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 try {
+                    loading.setValue(false);
                     if (response.code() == 200) {
                         JSONObject obj = new JSONObject(response.body().string());
                         JSONObject userJson = obj.getJSONObject("user");
+
                         User user = new User(
-                                userJson.getString("id"),
+                                userJson.getString("_id"),
                                 userJson.getString("name"),
-                                userJson.getString("phone"),
-                                userJson.getString("role"),
-                                userJson.getString("token"),
-                                userJson.getBoolean("isVerified")
+                                userJson.getString("phone")
                         );
-                        gotoNextStep.setValue(STATE.CHAT);
+                        gotoScreen.setValue(STATE.LOGIN);
                     } else {
                         JSONObject obj = new JSONObject(response.errorBody().string());
                         error.setValue(obj.getString("error"));
@@ -108,13 +111,6 @@ public class RegisterViewModel extends ViewModel {
                 Log.e("Error", t.getMessage());
             }
         });
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                loading.setValue(false);
-            }
-        }, 3000);
     }
 
     public boolean comparePassword() {
@@ -129,13 +125,13 @@ public class RegisterViewModel extends ViewModel {
         if (name.getValue().length() < 2) {
             error.setValue("Name must be at least 2 characters");
         } else {
-            gotoNextStep.setValue(STATE.INPUT_PHONE_NUMBER);
+            gotoScreen.setValue(STATE.INPUT_PHONE_NUMBER);
         }
     }
 
     public void isValidPhone() {
         if (Patterns.PHONE.matcher(phoneNumber.getValue()).matches()) {
-            gotoNextStep.setValue(STATE.INPUT_PASSWORD);
+            gotoScreen.setValue(STATE.INPUT_PASSWORD);
         } else {
             error.setValue("Invalid phone number");
         }
@@ -153,6 +149,7 @@ public class RegisterViewModel extends ViewModel {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     try {
+                        loading.setValue(false);
                         if (response.code() == 201) {
                             JSONObject obj = new JSONObject(response.body().string());
                             JSONObject userJson = obj.getJSONObject("user");
@@ -163,7 +160,7 @@ public class RegisterViewModel extends ViewModel {
                                     userJson.getString("phone")
 
                             );
-                            gotoNextStep.setValue(STATE.INPUT_OTP);
+                            gotoScreen.setValue(STATE.INPUT_OTP);
                         } else {
                             JSONObject obj = new JSONObject(response.errorBody().string());
                             error.setValue(obj.getString("error"));
@@ -180,13 +177,6 @@ public class RegisterViewModel extends ViewModel {
                     Log.e("Error", t.getMessage());
                 }
             });
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    loading.setValue(false);
-                }
-            }, 3000);
         }
     }
 }

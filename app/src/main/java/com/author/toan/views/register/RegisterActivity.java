@@ -6,6 +6,7 @@ import androidx.lifecycle.Observer;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import com.author.toan.R;
@@ -23,19 +24,22 @@ public class RegisterActivity extends AppCompatActivity {
         activityRegisterBinding.setLifecycleOwner(this);
         activityRegisterBinding.setRegisterViewModel(registerViewModel);
 
-        registerViewModel.getGotoNextStep().observe(this, new Observer<STATE>() {
+        registerViewModel.getGotoScreen().observe(this, new Observer<STATE>() {
             @Override
-            public void onChanged(STATE STATE) {
-                if (STATE == STATE.INPUT_PHONE_NUMBER) {
-                    Intent intent = new Intent(RegisterActivity.this, InputPhoneNumberActivity.class);
-                    startActivity(intent);
+            public void onChanged(STATE state) {
+                Log.e("STATE - register", state.toString());
+                if (state == STATE.INPUT_PHONE_NUMBER) {
+                    startActivity(new Intent(getApplicationContext(), InputPhoneNumberActivity.class));
+                    registerViewModel.setGotoScreen(STATE.MAIN);
                 }
             }
         });
         registerViewModel.getError().observe(this, new Observer<String>() {
             @Override
             public void onChanged(String s) {
-                activityRegisterBinding.tvError.setVisibility(View.VISIBLE);
+                if (!s.isEmpty()) {
+                    activityRegisterBinding.tvError.setVisibility(View.VISIBLE);
+                }
             }
         });
     }

@@ -32,11 +32,36 @@ public class ForgetPasswordActivity extends AppCompatActivity {
         activityForgetPasswordBinding.setLifecycleOwner(this);
         activityForgetPasswordBinding.setForgetPasswordViewModel(forgetPasswordViewModel);
 
-        forgetPasswordViewModel.getGotoNextStep().observe(this, new Observer<STATE>() {
+        forgetPasswordViewModel.getGotoScreen().observe(this, new Observer<STATE>() {
             @Override
-            public void onChanged(STATE STATE) {
-                if (STATE == STATE.INPUT_OTP) {
+            public void onChanged(STATE state) {
+                Log.e("STATE", state.toString());
+                if (state == STATE.INPUT_OTP) {
+                    startActivity(new Intent(getApplicationContext(), InputOTPActivity.class));
+                    forgetPasswordViewModel.setGotoScreen(STATE.MAIN);
+                    forgetPasswordViewModel.setError("");
+                }
+            }
+        });
 
+        forgetPasswordViewModel.getError().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                if (!s.isEmpty()) {
+                    activityForgetPasswordBinding.tvError.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        forgetPasswordViewModel.getLoading().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean isLoading) {
+                if (isLoading) {
+                    activityForgetPasswordBinding.progressBar.setVisibility(View.VISIBLE);
+                    activityForgetPasswordBinding.btnContinue.setVisibility(View.GONE);
+                } else {
+                    activityForgetPasswordBinding.btnContinue.setVisibility(View.VISIBLE);
+                    activityForgetPasswordBinding.progressBar.setVisibility(View.GONE);
                 }
             }
         });

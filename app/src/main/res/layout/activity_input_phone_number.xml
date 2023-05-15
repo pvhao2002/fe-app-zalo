@@ -89,7 +89,9 @@
                 android:layout_gravity="bottom|end"
                 android:src="@drawable/ic_arrow_back2"
                 android:onClick="@{()->registerViewModel.isValidPhone()}"
-                app:backgroundTint="#46A0F0" />
+                app:backgroundTint="#46A0F0"
+                app:tint="#ffffff"
+                />
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 
