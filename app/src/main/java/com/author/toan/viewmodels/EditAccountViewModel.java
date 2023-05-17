@@ -87,7 +87,38 @@ public class EditAccountViewModel extends ViewModel {
         gotoScreen.setValue(STATE.EDIT_PROFILE);
     }
 
-    public void deleteAccount() {}
+    public void deleteAccount() {
+        String token = SharedPrefManager.getUser().getToken();
+        loading.setValue(true);
+        apiUserService.deleteAccount("Bearer " + token).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                loading.setValue(false);
+                try {
+                    if (response.code() == 200) {
+                        JSONObject obj = new JSONObject(response.body().string());
+                        String message = obj.getString("message");
+                        Log.e("Message: ", message);
+                        gotoScreen.setValue(STATE.LOGIN);
+                    } else {
+                        JSONObject obj = new JSONObject(response.errorBody().string());
+                        Log.e("Error-", obj.getString("error"));
+                        error.setValue(obj.getString("error"));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+            }
+        });
+    }
+
 
     public void update() {
         String token = SharedPrefManager.getUser().getToken();
@@ -125,6 +156,10 @@ public class EditAccountViewModel extends ViewModel {
                 }
             });
         }
+    }
+
+    public void logout() {
+       gotoScreen.setValue(STATE.LOGIN);
     }
 
 }

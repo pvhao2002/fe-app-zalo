@@ -1,11 +1,16 @@
 package com.author.toan.routes;
 
+import com.author.toan.models.User;
+
 import java.util.HashMap;
+import java.util.List;
 
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
+import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
@@ -36,4 +41,10 @@ public interface APIUserService {
     @POST("upload-image")
     @Multipart
     Call<ResponseBody> uploadImage (@Part MultipartBody.Part avatar, @Header("Authorization") String token);
+
+    @DELETE("delete-account")
+    Call<ResponseBody> deleteAccount (@Header("Authorization") String token);
+
+    @GET("get-friends")
+    Call<List<User>> getFriends (@Header("Authorization") String token);
 }

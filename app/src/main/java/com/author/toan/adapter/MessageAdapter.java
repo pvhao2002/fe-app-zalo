@@ -78,6 +78,12 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
+    public void addMessage(Message message) {
+        Log.e("message", message.getSender().getAvatar().getUrl());
+        messageList.add(message);
+        notifyItemInserted(messageList.size() - 1);
+    }
+
     public static class SenderViewHolder extends RecyclerView.ViewHolder {
         public ObservableField<String> Smessage = new ObservableField<>();
         private final RowMessageSenderBinding rowMessageSenderBinding;

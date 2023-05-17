@@ -16,6 +16,7 @@ import com.author.toan.adapter.ChatAdapter;
 import com.author.toan.databinding.ActivityChatBinding;
 import com.author.toan.databinding.RowChatBinding;
 import com.author.toan.models.Chat;
+import com.author.toan.remote.SocketClient;
 import com.author.toan.viewmodels.ChatViewModel;
 import com.author.toan.views.editprofile.UserActivity;
 
@@ -40,6 +41,10 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.OnIte
                     startActivity(new Intent(getApplicationContext(), UserActivity.class));
                     chatViewModel.setGotoScreen(STATE.MAIN);
                 }
+                else if (state == STATE.VIEW_FRIEND) {
+                    startActivity(new Intent(getApplicationContext(), FriendActivity.class));
+                    chatViewModel.setGotoScreen(STATE.MAIN);
+                }
             }
         });
 
@@ -58,6 +63,7 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.OnIte
 
     @Override
     public void itemClick(Chat chat) {
+        SocketClient.getInstance().getSocket().emit("join chat", chat.getId());
         Intent intent = new Intent(this, MessageActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString("id", chat.getId());

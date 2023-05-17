@@ -6,13 +6,12 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.author.toan.STATE;
-import com.author.toan.models.Chat;
 import com.author.toan.models.Message;
 import com.author.toan.remote.SharedPrefManager;
-import com.author.toan.routes.APIChatService;
+import com.author.toan.remote.SocketClient;
 import com.author.toan.routes.APIMessageService;
-import com.author.toan.routes.ChatClient;
 import com.author.toan.routes.MessageClient;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,26 +23,19 @@ import java.util.List;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MessageViewModel extends ViewModel {
-    private Socket mSocket;
-
-    {
-        try {
-            mSocket = IO.socket("http://10.0.2.2:8000");
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-    }
     private MutableLiveData<Boolean> loading;
     private MutableLiveData<List<Message>> messages;
     private APIMessageService apiMessageService;
     public MutableLiveData<String> message;
     private static MessageViewModel instance;
     private MutableLiveData<STATE> gotoScreen;
+    private String chatId;
     private MessageViewModel() {
         loading = new MutableLiveData<>(false);
         message = new MutableLiveData<>();
@@ -78,7 +70,9 @@ public class MessageViewModel extends ViewModel {
     public void back() {
         gotoScreen.setValue(STATE.CHAT);
     }
+
     public void getAllMessage(String chatId) {
+        this.chatId = chatId;
         String token = SharedPrefManager.getUser().getToken();
         HashMap<String, String> id = new HashMap<>();
         id.put("chatId", chatId);
@@ -111,7 +105,36 @@ public class MessageViewModel extends ViewModel {
     }
 
     public void sendMessage() {
+        String token = SharedPrefManager.getUser().getToken();
+        HashMap<String, String> chat_content = new HashMap<>();
+        chat_content.put("chatId", chatId);
+        chat_content.put("content", message.getValue());
+        loading.setValue(true);
 
+        apiMessageService.sendMessage(chat_content, "Bearer " + token).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                loading.setValue(false);
+                try {
+                    loading.setValue(false);
+                    if (response.code() == 200) {
+                        JSONObject obj = new JSONObject(response.body().string());
+                        SocketClient.getInstance().getSocket().emit("new message", obj);
+                    } else {
+                        JSONObject obj = new JSONObject(response.errorBody().string());
+                        Log.e("Error-backend", obj.getString("error"));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e("Error-call", t.getMessage());
+            }
+        });
     }
-
 }

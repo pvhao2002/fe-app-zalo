@@ -85,6 +85,29 @@
                             android:textColor="#676767"
                             android:textSize="12sp" />
                     </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/btnFriends"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.2"
+                        android:orientation="vertical"
+                        android:onClick="@{()->chatViewModel.viewFriends()}"
+                        >
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="7dp"
+                            android:src="@drawable/friends" />
+                        <TextView
+                            android:id="@+id/tvFriends"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Friends"
+                            android:textAlignment="center"
+                            android:textColor="#676767"
+                            android:textSize="12sp" />
+                    </LinearLayout>
 
                     <LinearLayout
                         android:id="@+id/btnGroups"

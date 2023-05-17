@@ -12,6 +12,7 @@ import com.author.toan.STATE;
 import com.author.toan.databinding.ActivityUserBinding;
 import com.author.toan.remote.SharedPrefManager;
 import com.author.toan.viewmodels.EditAccountViewModel;
+import com.author.toan.views.login.LoginActivity;
 import com.bumptech.glide.Glide;
 
 public class UserActivity extends AppCompatActivity {
@@ -38,6 +39,12 @@ public class UserActivity extends AppCompatActivity {
                 }
                 else if (state == STATE.EDIT_PROFILE) {
                     startActivity(new Intent(getApplicationContext(), EditProfileActivity.class));
+                    editAccountViewModel.setGotoScreen(STATE.MAIN);
+                }
+                else if (state == STATE.LOGIN) {
+                    SharedPrefManager.getInstance(getApplicationContext()).logout();
+                    finish();
+                    startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                     editAccountViewModel.setGotoScreen(STATE.MAIN);
                 }
             }

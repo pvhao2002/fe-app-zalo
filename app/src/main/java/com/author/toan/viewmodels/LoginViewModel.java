@@ -10,6 +10,7 @@ import com.author.toan.STATE;
 import com.author.toan.models.Avatar;
 import com.author.toan.models.User;
 import com.author.toan.remote.SharedPrefManager;
+import com.author.toan.remote.SocketClient;
 import com.author.toan.routes.APIUserService;
 import com.author.toan.routes.UserClient;
 import com.author.toan.views.login.LoginActivity;
@@ -18,8 +19,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 
+import io.socket.client.IO;
+import io.socket.client.Socket;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -34,7 +38,14 @@ public class LoginViewModel extends ViewModel {
     public MutableLiveData<String> password;
     private MutableLiveData<STATE> gotoScreen;
     private static LoginViewModel instance;
-
+    private Socket mSocket;
+    {
+        try {
+            mSocket = IO.socket("http://10.0.2.2:8000");
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
     public static LoginViewModel getInstance() {
         if (instance == null) {
             instance = new LoginViewModel();
@@ -100,6 +111,7 @@ public class LoginViewModel extends ViewModel {
                                 obj.getBoolean("isVerified"),
                                 avatar
                         );
+                        SocketClient.getInstance().getSocket().emit("setup", obj);
                         mUser.setValue(user);
                         gotoScreen.setValue(STATE.CHAT);
                         Log.e("token: ", user.getToken());

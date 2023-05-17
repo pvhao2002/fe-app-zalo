@@ -18,11 +18,21 @@ public class Message implements Serializable {
     @Expose
     private User sender;
 
+    @SerializedName("chat")
+    @Expose
+    private Chat chat;
 
-    public Message(String id, String content, User sender) {
+    public Message( String id, String content, User sender) {
         this.id = id;
         this.sender = sender;
         this.content = content;
+    }
+
+    public Message(String id, String content, User sender, Chat chat) {
+        this.id = id;
+        this.sender = sender;
+        this.content = content;
+        this.chat = chat;
     }
 
     public String getId() {
@@ -49,4 +59,11 @@ public class Message implements Serializable {
         this.content = content;
     }
 
+    public Chat getChat() {
+        return chat;
+    }
+
+    public void setChat(Chat chat) {
+        this.chat = chat;
+    }
 }

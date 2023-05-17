@@ -1,6 +1,7 @@
 package com.author.toan.routes;
 
 import com.author.toan.models.Chat;
+import com.author.toan.models.User;
 
 import java.util.HashMap;
 import java.util.List;
@@ -15,4 +16,6 @@ import retrofit2.http.POST;
 public interface APIChatService {
     @GET("get-chat")
     Call<List<Chat>> getChats (@Header("Authorization") String token);
+
+
 }

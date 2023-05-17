@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
         <variable
-            name="chatViewHodel"
-            type="com.author.toan.adapter.ChatAdapter.ChatViewHolder" />
+            name="friendViewHolder"
+            type="com.author.toan.adapter.FriendAdapter.FriendViewHolder" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_marginTop="5dp"
         android:background="#ffffff"
-        android:layout_height="100dp">
 
+        >
         <ImageView
             android:id="@+id/ivAvatar"
             android:layout_width="60dp"
@@ -29,26 +31,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="2dp"
             android:hint="Name"
-            android:text="@={chatViewHodel.name}"
+            android:text="@={friendViewHolder.name}"
             android:textColor="#000000"
             android:textSize="20sp"
             android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/ivAvatar"
             app:layout_constraintStart_toEndOf="@+id/ivAvatar"
             app:layout_constraintTop_toTopOf="@+id/ivAvatar" />
 
-        <TextView
-            android:id="@+id/lastMessage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:hint="Last message"
-            android:text="@={chatViewHodel.lastMessage}"
-            android:textColor="#7A7A7A"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/name"
-            app:layout_constraintTop_toBottomOf="@+id/name" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -153,7 +153,7 @@ public class RegisterViewModel extends ViewModel {
                         if (response.code() == 201) {
                             JSONObject obj = new JSONObject(response.body().string());
                             JSONObject userJson = obj.getJSONObject("user");
-                            userId = userJson.getString("id");
+                            userId = userJson.getString("_id");
                             User user = new User(
                                     userId,
                                     userJson.getString("name"),

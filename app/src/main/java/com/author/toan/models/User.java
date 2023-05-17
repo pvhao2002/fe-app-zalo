@@ -52,7 +52,8 @@ public class User implements Serializable {
         this.id = id;
         this.phone = phone;
         this.name = name;
-        this.token = token;
+        this.isVerified = isVerified;
+        this.avatar = avatar;
     }
 
     public User(String id, String name, String phone, String token, Boolean isVerified, Avatar avatar) {

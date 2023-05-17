@@ -12,6 +12,7 @@ import com.author.toan.R;
 import com.author.toan.STATE;
 import com.author.toan.databinding.ActivityEditAccountBinding;
 import com.author.toan.viewmodels.EditAccountViewModel;
+import com.author.toan.views.login.LoginActivity;
 
 public class EditAccountActivity extends AppCompatActivity {
 
@@ -28,6 +29,11 @@ public class EditAccountActivity extends AppCompatActivity {
             public void onChanged(STATE state) {
                 if (state == STATE.CHANGE_PASSWORD) {
                     startActivity(new Intent(getApplicationContext(), ChangePasswordActivity.class));
+                    editAccountViewModel.setGotoScreen(STATE.MAIN);
+                }
+                else if (state == STATE.LOGIN) {
+                    finish();
+                    startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                     editAccountViewModel.setGotoScreen(STATE.MAIN);
                 }
             }

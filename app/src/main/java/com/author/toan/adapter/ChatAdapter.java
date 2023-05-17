@@ -81,16 +81,18 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
                         .load(chat.getUsers().get(1).getAvatar().getUrl())
                         .circleCrop()
                         .into(rowChatBinding.ivAvatar);
-                name.set(chat.getUsers().get(1).getName());
+                name.set(chat.getName());
             }
             else {
                 Glide.with(rowChatBinding.getRoot().getContext())
                         .load(chat.getUsers().get(0).getAvatar().getUrl())
                         .circleCrop()
                         .into(rowChatBinding.ivAvatar);
-                name.set(chat.getUsers().get(0).getName());
+                name.set(chat.getName());
             }
-            lastMessage.set(chat.getMessages().get(chat.getMessages().size() - 1).getContent());
+            if (chat.getMessages().size() > 0) {
+                lastMessage.set(chat.getMessages().get(chat.getMessages().size() - 1).getContent());
+            }
         }
 
         @Override

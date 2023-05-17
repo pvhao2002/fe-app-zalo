@@ -30,6 +30,7 @@ public class InputOTPActivity extends AppCompatActivity {
             @Override
             public void onChanged(STATE state) {
                 if (state == STATE.LOGIN) {
+                    finish();
                     startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                     registerViewModel.setGotoScreen(STATE.MAIN);
                 }

@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel;
 import com.author.toan.STATE;
 import com.author.toan.models.Chat;
 import com.author.toan.models.Message;
+import com.author.toan.models.User;
 import com.author.toan.remote.SharedPrefManager;
 import com.author.toan.routes.APIChatService;
 import com.author.toan.routes.APIMessageService;
@@ -35,14 +36,18 @@ public class ChatViewModel extends ViewModel {
     private MutableLiveData<Boolean> loading;
     private MutableLiveData<STATE> gotoScreen;
     private MutableLiveData<List<Chat>> chat;
+    private MutableLiveData<List<User>> friends;
     private APIChatService apiChatService;
+    private APIUserService apiUserService;
     private static ChatViewModel instance;
 
     private ChatViewModel() {
         loading = new MutableLiveData<>(false);
         gotoScreen = new MutableLiveData<>();
         chat = new MutableLiveData<>();
+        friends = new MutableLiveData<>();
         apiChatService = ChatClient.getInstance();
+        apiUserService = UserClient.getInstance();
     }
 
     public static ChatViewModel getInstance() {
@@ -80,10 +85,16 @@ public class ChatViewModel extends ViewModel {
         gotoScreen.setValue(STATE.VIEW_MESSAGE);
     }
 
+    public void viewFriends() {
+        gotoScreen.setValue(STATE.VIEW_FRIEND);
+    }
     public MutableLiveData<List<Chat>> getChat() {
         return chat;
     }
 
+    public MutableLiveData<List<User>> getFriends() {
+        return friends;
+    }
     public void getChats() {
         String token = SharedPrefManager.getUser().getToken();
         loading.setValue(true);
@@ -109,6 +120,37 @@ public class ChatViewModel extends ViewModel {
 
             @Override
             public void onFailure(Call<List<Chat>> call, Throwable t) {
+                Log.e("Error-call", t.getMessage());
+            }
+        });
+    }
+
+    public void getFriend() {
+        String token = SharedPrefManager.getUser().getToken();
+        loading.setValue(true);
+
+        apiUserService.getFriends("Bearer " + token).enqueue(new Callback<List<User>>() {
+            @Override
+            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                loading.setValue(false);
+                try {
+                    loading.setValue(false);
+                    if (response.code() == 200) {
+                        List<User> userList = response.body();
+                        friends.setValue(userList);
+                    } else {
+                        JSONObject obj = new JSONObject(response.errorBody().string());
+                        Log.e("Error-backend", obj.getString("error"));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<User>> call, Throwable t) {
                 Log.e("Error-call", t.getMessage());
             }
         });

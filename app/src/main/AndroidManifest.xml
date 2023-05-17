@@ -24,6 +24,10 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".views.chat.FriendActivity"
+            android:label="Friends"
+            android:exported="false" />
+        <activity
             android:name=".views.chat.MessageActivity"
             android:exported="false" />
         <activity
