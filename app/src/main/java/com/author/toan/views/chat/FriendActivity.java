@@ -5,10 +5,12 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
 import com.author.toan.R;
+import com.author.toan.STATE;
 import com.author.toan.adapter.ChatAdapter;
 import com.author.toan.adapter.FriendAdapter;
 import com.author.toan.databinding.ActivityChatBinding;
@@ -40,6 +42,17 @@ public class FriendActivity extends AppCompatActivity implements FriendAdapter.O
                     activityFriendBinding.rvFriends.setAdapter(friendAdapter);
                     friendAdapter.setOnItemClickListener(FriendActivity.this);
                 }
+            }
+        });
+
+        chatViewModel.getGotoScreen().observe(this, new Observer<STATE>() {
+            @Override
+            public void onChanged(STATE state) {
+                if (state == STATE.VIEW_FRIEND_REQUEST) {
+                    startActivity(new Intent(getApplicationContext(), FriendRequestActivity.class));
+                    chatViewModel.setGotoScreen(STATE.MAIN);
+                }
+
             }
         });
     }

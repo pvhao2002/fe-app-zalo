@@ -64,6 +64,7 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.OnIte
     @Override
     public void itemClick(Chat chat) {
         SocketClient.getInstance().getSocket().emit("join chat", chat.getId());
+        Log.e("join chat", chat.getId());
         Intent intent = new Intent(this, MessageActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString("id", chat.getId());

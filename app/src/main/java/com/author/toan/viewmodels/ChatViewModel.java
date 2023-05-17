@@ -10,6 +10,7 @@ import com.author.toan.models.Chat;
 import com.author.toan.models.Message;
 import com.author.toan.models.User;
 import com.author.toan.remote.SharedPrefManager;
+import com.author.toan.response.RequestAddFriend;
 import com.author.toan.routes.APIChatService;
 import com.author.toan.routes.APIMessageService;
 import com.author.toan.routes.APIUserService;
@@ -37,6 +38,7 @@ public class ChatViewModel extends ViewModel {
     private MutableLiveData<STATE> gotoScreen;
     private MutableLiveData<List<Chat>> chat;
     private MutableLiveData<List<User>> friends;
+    private MutableLiveData<List<RequestAddFriend>> requestAddFriends;
     private APIChatService apiChatService;
     private APIUserService apiUserService;
     private static ChatViewModel instance;
@@ -46,6 +48,7 @@ public class ChatViewModel extends ViewModel {
         gotoScreen = new MutableLiveData<>();
         chat = new MutableLiveData<>();
         friends = new MutableLiveData<>();
+        requestAddFriends = new MutableLiveData<>();
         apiChatService = ChatClient.getInstance();
         apiUserService = UserClient.getInstance();
     }
@@ -85,13 +88,19 @@ public class ChatViewModel extends ViewModel {
         gotoScreen.setValue(STATE.VIEW_MESSAGE);
     }
 
+    public void getFriendRequest() {
+        gotoScreen.setValue(STATE.VIEW_FRIEND_REQUEST);
+    }
+
     public void viewFriends() {
         gotoScreen.setValue(STATE.VIEW_FRIEND);
     }
     public MutableLiveData<List<Chat>> getChat() {
         return chat;
     }
-
+    public MutableLiveData<List<RequestAddFriend>> getRequestAddFriends() {
+        return requestAddFriends;
+    }
     public MutableLiveData<List<User>> getFriends() {
         return friends;
     }
@@ -154,5 +163,39 @@ public class ChatViewModel extends ViewModel {
                 Log.e("Error-call", t.getMessage());
             }
         });
+    }
+
+    public void getRequestFriends() {
+        String token = SharedPrefManager.getUser().getToken();
+        loading.setValue(true);
+
+        apiUserService.getFriendRequest("Bearer " + token).enqueue(new Callback<List<RequestAddFriend>>() {
+            @Override
+            public void onResponse(Call<List<RequestAddFriend>> call, Response<List<RequestAddFriend>> response) {
+                loading.setValue(false);
+                try {
+                    loading.setValue(false);
+                    if (response.code() == 200) {
+                        List<RequestAddFriend> requestAddFriend = response.body();
+                        requestAddFriends.setValue(requestAddFriend);
+                    } else {
+                        JSONObject obj = new JSONObject(response.errorBody().string());
+                        Log.e("Error-backend", obj.getString("error"));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onFailure(Call<List<RequestAddFriend>> call, Throwable t) {
+                Log.e("Error-call", t.getMessage());
+            }
+        });
+    }
+
+    public void answerRequestAddFriend(String requestId ,String answer) {
+
     }
 }

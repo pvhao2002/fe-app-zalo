@@ -1,6 +1,7 @@
 package com.author.toan.routes;
 
 import com.author.toan.models.User;
+import com.author.toan.response.RequestAddFriend;
 
 import java.util.HashMap;
 import java.util.List;
@@ -47,4 +48,9 @@ public interface APIUserService {
 
     @GET("get-friends")
     Call<List<User>> getFriends (@Header("Authorization") String token);
+
+    @GET("request-add-friends")
+    Call<List<RequestAddFriend>> getFriendRequest (@Header("Authorization") String token);
+
+
 }
