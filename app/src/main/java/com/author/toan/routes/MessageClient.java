@@ -5,7 +5,7 @@ public class MessageClient extends BaseClient {
     private static final String BASE_URL_ONLINE = "https://zalo.herokuapp.com/api/message/";
     private static APIMessageService apiMessageService;
     public static APIMessageService getInstance() {
-        if (apiMessageService == null) return createService(APIMessageService.class, BASE_URL);
+        if (apiMessageService == null) return createService(APIMessageService.class, BASE_URL_ONLINE);
         return apiMessageService;
     }
 }

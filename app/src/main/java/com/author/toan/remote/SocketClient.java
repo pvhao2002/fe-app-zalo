@@ -17,7 +17,7 @@ public class SocketClient {
 
     private SocketClient() {
         try {
-            mSocket = IO.socket("http://10.0.2.2:8000");
+            mSocket = IO.socket("https://zalo.herokuapp.com");
             mSocket.connect();
         } catch (URISyntaxException e) {
             e.printStackTrace();

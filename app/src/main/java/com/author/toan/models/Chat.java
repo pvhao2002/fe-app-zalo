@@ -35,6 +35,11 @@ public class Chat implements Serializable {
     @Expose
     private Avatar avatar;
 
+    public Chat(String id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public Chat(String id, String name, boolean isGroup, List<User> users, List<Message> messages, User owner, Avatar avatar) {
         this.id = id;
         this.name = name;

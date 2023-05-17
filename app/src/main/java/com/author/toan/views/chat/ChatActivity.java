@@ -49,6 +49,10 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.OnIte
                     startActivity(new Intent(getApplicationContext(), FriendActivity.class));
                     chatViewModel.setGotoScreen(STATE.MAIN);
                 }
+                else if (state == STATE.VIEW_MESSAGE) {
+                    startActivity(new Intent(getApplicationContext(), ChatActivity.class));
+                    chatViewModel.setGotoScreen(STATE.MAIN);
+                }
             }
         });
 

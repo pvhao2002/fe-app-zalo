@@ -5,7 +5,7 @@ public class ChatClient extends BaseClient {
     private static final String BASE_URL_ONLINE = "https://zalo.herokuapp.com/api/chat/";
     private static APIChatService apiChatService;
     public static APIChatService getInstance() {
-        if (apiChatService == null) return createService(APIChatService.class, BASE_URL);
+        if (apiChatService == null) return createService(APIChatService.class, BASE_URL_ONLINE);
         return apiChatService;
     }
 }
