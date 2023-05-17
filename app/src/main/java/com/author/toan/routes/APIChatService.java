@@ -17,5 +17,10 @@ public interface APIChatService {
     @GET("get-chat")
     Call<List<Chat>> getChats (@Header("Authorization") String token);
 
+    @POST("access-chat")
+    Call<ResponseBody> accessChat (@Body HashMap<String, String> chatId, @Header("Authorization") String token);
+
+    @POST("create-chat")
+    Call<ResponseBody> createChat (@Body HashMap<String, String> userId, @Header("Authorization") String token);
 
 }

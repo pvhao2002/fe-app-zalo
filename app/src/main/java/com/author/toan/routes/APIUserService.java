@@ -52,5 +52,12 @@ public interface APIUserService {
     @GET("request-add-friends")
     Call<List<RequestAddFriend>> getFriendRequest (@Header("Authorization") String token);
 
+    @POST("add-friend")
+    Call<RequestAddFriend> addFriend (@Body HashMap<String, String> userId, @Header("Authorization") String token);
 
+    @POST("answer-request-add-friend")
+    Call<ResponseBody> answerRequestAddFriend (@Body HashMap<String, String> answer_id, @Header("Authorization") String token);
+
+    @POST("search-user")
+    Call<ResponseBody> searchUser (@Body HashMap<String, String> phone, @Header("Authorization") String token);
 }

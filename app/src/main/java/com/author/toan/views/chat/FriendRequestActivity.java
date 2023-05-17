@@ -45,6 +45,16 @@ public class FriendRequestActivity extends AppCompatActivity implements FriendRe
             }
         });
 
+        chatViewModel.getGotoScreen().observe(this, new Observer<STATE>() {
+            @Override
+            public void onChanged(STATE state) {
+                if (state == STATE.VIEW_FRIEND) {
+                    startActivity(new Intent(getApplicationContext(), FriendActivity.class));
+                    chatViewModel.setGotoScreen(STATE.MAIN);
+                }
+            }
+        });
+
     }
 
     @Override
